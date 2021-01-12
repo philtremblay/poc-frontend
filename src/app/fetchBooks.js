@@ -4,7 +4,7 @@ import {fetchBooksPending, fetchBooksSuccess, fetchBooksError} from './action'
 function fetchBooks() {
     return dispatch => {
         dispatch(fetchBooksPending());
-        axios.get("http://localhost:8080/book")
+        axios.get(process.env.REACT_APP_BACKEND_API)
         .then(res => {
             dispatch(fetchBooksSuccess(res.data))
         })
