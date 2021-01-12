@@ -1,58 +1,57 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
-  );
+import {getBooksError, getBooks, getBooksPending} from './app/reducer';
+
+import BookList from './BookList';
+import fetchBooks from './app/fetchBooks';
+
+class BookView extends Component {
+    constructor(props) {
+        super(props);
+        this.shouldComponentRender = this.shouldComponentRender.bind(this);
+    }
+
+    componentDidMount() {
+        const {fetchBooks} = this.props;
+        fetchBooks();
+    }
+    
+    shouldComponentRender() {
+        if(this.pending === false) return false;
+        // more tests
+        return true;
+    }
+    
+    render() {
+        const {books, error} = this.props;
+
+        if(!this.shouldComponentRender()) return (
+            <div>Waitign</div>
+        )
+
+        return (
+            <div className='books-list-wrapper'>
+                {error && <span className='books-list-error'>{error}</span>}
+                <BookList books={books} />
+            </div>
+        )
+    }
 }
 
-export default App;
+
+const mapStateToProps = state => ({
+    error: getBooksError(state),
+    books: getBooks(state),
+    pending: getBooksPending(state)
+})
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+    fetchBooks: fetchBooks
+}, dispatch)
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(BookView);
