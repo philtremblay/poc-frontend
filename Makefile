@@ -18,9 +18,10 @@ DOCKER_TAG   ?= $(DEFAULT_TAG)
 
 .PHONY: docker
 docker: DOCKER_IMAGE ?= $(DOCKER_IMAGE)
+docker: BACKEND_API ?= http://localhost:8080
 docker: ## Build the project container with Docker
 	@ $(MAKE) --no-print-directory log-$@
-	@ docker build --tag $(DOCKER_IMAGE):$(DOCKER_TAG) .
+	@ docker build --build-arg REACT_APP_BACKEND_API=$(BACKEND_API) --tag $(DOCKER_IMAGE):$(DOCKER_TAG) .
 
 .PHONY: push
 push: DOCKER_IMAGE ?= $(DOCKER_IMAGE)
