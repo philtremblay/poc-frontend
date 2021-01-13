@@ -6,11 +6,8 @@ const BookListItem = ({book}) => {
     return (
         <li>
             <div className="view">
-                <div className="book-name">
-                    {name}
-                </div>
-                <div className="author">
-                    {author}
+                <div>
+                    <p><i>{name}</i><b> by </b><i>{author}</i></p>
                 </div>
             </div>
         </li>
